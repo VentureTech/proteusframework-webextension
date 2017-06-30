@@ -74,7 +74,7 @@ function addPluginContent(req) {
 			rcDebug.show().addClass(getNextPropClass());
 			node.appendChild(rcDebug[0]);
 			if (req.status === 401) {
-				$(node).append('<p class="login_prompt">Login to <a target="vipasuite" href="https://' + servers[serverIndex] + '">Vipa Suite</a> to get more information.</p>');
+				$(node).append('<p class="login_prompt">Login to <a target="proteus" href="https://' + servers[serverIndex] + '">Proteus</a> to get more information.</p>');
 			}
 			setupRCToggle();
 			return;
@@ -110,8 +110,9 @@ function addPluginContent(req) {
 		var rcEnabled = result.Information.Coalescing;
 		if (tabInfo !== null && rcEnabled) {
 			rcDebug.show();
-			if (!tabInfo.rc_on)
-				$("#rc_debug").text("true");
+			if (!tabInfo.rc_on) {
+				$("#rc_debug").text("false");
+			}
 			setupRCToggle();
 		}
 
@@ -133,10 +134,10 @@ function setupRCToggle() {
 		else
 			nurl = nurl + "?";
 		nurl = nurl + "cms_rc_debug";
-		if (!tabInfo.rc_on)
+		if (tabInfo.rc_on)
 			nurl = nurl + "=off";
 		tabInfo.rc_on = !tabInfo.rc_on;
-		$("#rc_debug").text(!tabInfo.rc_on);
+		$("#rc_debug").text(tabInfo.rc_on);
 		chrome.tabs.update(tab.id, {url: nurl});
 	});
 }
@@ -216,7 +217,7 @@ function loadData() {
 }
 function queryWebService() {
 	if (servers.length === 0)
-		servers.push("https://vipasuite.com");
+		servers.push("https://cms.proteus.co");
 	var s = servers[serverIndex];
 	//console.log("trying server: " + s);
 	pf.xhr({

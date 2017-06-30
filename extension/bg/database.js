@@ -107,7 +107,7 @@ db.getInstallServers = function (sendResponse) {
 				}
 				if (res.length === 0) {
 					// Set defaults
-					res = ["vipasuite.com", "draft.vipasuite.com", "qa.vipasuite.com"];
+					res = ["cms.proteus.co", "draft.vipasuite.com", "qa.vipasuite.com"];
 					for (i = 0, ib = res.length; i < ib; i++) {
 						db.setInstallServer(res[i], res[i]);
 					}
