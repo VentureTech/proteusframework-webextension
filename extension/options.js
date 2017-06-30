@@ -2,6 +2,7 @@ window.addEventListener('load', function () {
 	$('#tabs').tabs();
 	init();
 	$('#save').click(save_options).keypress(save_options);
+	$('#server_1').click(removeServer);
 });
 
 var db = chrome.extension.getBackgroundPage().db,
@@ -55,7 +56,7 @@ function init() {
 				'<div class="prop">',
 				'<label for="' + id + '">Server: </label>',
 				'https://<input class="server" id="' + id + '" value="' + el + '" size="30" type="text">',
-				'<button onclick="removeServer(\'' + id + '\')">Remove</button>',
+				'<button id="' + id + '" class="remove-btn">Remove</button>',
 				'</div>'
 			];
 			serversDIV.append(content.join("\n"));
@@ -71,12 +72,14 @@ function addServer() {
 			'<label for="' + id + '">Server: </label>',
 			'https://<input class="server" id="' + id + '" value="" size="30" type="text">',
 			'<button onclick="addServer();this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\';">Add</button>',
-			'<button onclick="removeServer(\'' + id + '\')" style="display:none">Remove</button>',
+			'<button id="' + id + '" class="remove-btn" style="display:none">Remove</button>',
 			'</div>'
 		];
 	serversDIV.append(content.join("\n"));
 }
-function removeServer(id) {
+
+function removeServer() {
+	var id = $(this).attr('id');
 	var input = $("#" + id);
 	db.removeInstallServer(input.val());
 	input.parent().remove();
@@ -84,3 +87,4 @@ function removeServer(id) {
 		addServer();
 	}
 }
+

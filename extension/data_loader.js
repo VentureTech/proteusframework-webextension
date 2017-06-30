@@ -54,7 +54,7 @@ function updateCmsInfo(tabInfo) {
 				break;
 			case "REQUEST":
 				cacheInfo = "No";
-				chrome.tts.speak("Ouch, Not Cacheable");
+				// chrome.tts.speak("Ouch, Not Cacheable");
 				break;
 		}
 		$('#cache_info').text(cacheInfo);
