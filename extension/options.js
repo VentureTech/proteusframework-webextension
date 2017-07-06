@@ -2,7 +2,6 @@ window.addEventListener('load', function () {
 	$('#tabs').tabs();
 	init();
 	$('#save').click(save_options).keypress(save_options);
-	$('#server_1').click(removeServer);
 });
 
 var db = chrome.extension.getBackgroundPage().db,
@@ -31,7 +30,7 @@ function save_options() {
 	//status.text("Options Saved.").fadeIn().delay(2000).fadeOut();
 	status.text("Options Saved.")
 		.animate({"opacity": 1}, {"duration": "slow", "easing": "linear"})
-		.delay(2000)
+		.delay(4000)
 		.animate({"opacity": 0}, {"duration": "slow", "easing": "linear"});
 }
 
@@ -55,36 +54,64 @@ function init() {
 			content = [
 				'<div class="prop">',
 				'<label for="' + id + '">Server: </label>',
-				'https://<input class="server" id="' + id + '" value="' + el + '" size="30" type="text">',
+				'https://<input class="server ' + id + '" value="' + el + '" size="30" type="text">',
 				'<button id="' + id + '" class="remove-btn">Remove</button>',
 				'</div>'
 			];
 			serversDIV.append(content.join("\n"));
 		}
+		setupAddServer();
 		addServer();
+		removeServer();
 	});
 }
-function addServer() {
+function setupAddServer() {
 	var id = "server_" + (++serverCount),
 		serversDIV = $("#installations"),
 		content = [
 			'<div class="prop">',
 			'<label for="' + id + '">Server: </label>',
-			'https://<input class="server" id="' + id + '" value="" size="30" type="text">',
-			'<button onclick="addServer();this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\';">Add</button>',
+			'https://<input class="server ' + id + '" value="" size="30" type="text">',
+			'<button for="' + id + '" class="add-btn">Add</button>',
 			'<button id="' + id + '" class="remove-btn" style="display:none">Remove</button>',
 			'</div>'
 		];
 	serversDIV.append(content.join("\n"));
 }
 
-function removeServer() {
-	var id = $(this).attr('id');
-	var input = $("#" + id);
-	db.removeInstallServer(input.val());
-	input.parent().remove();
-	if ($("input.server").length === 0) {
-		addServer();
-	}
+function addServer() {
+	$('.add-btn').on('click', function () {
+		var id = $(this).attr('for');
+		var url = $('.prop .server.' + id + '').val();
+		var host = url.replace(/\s*/, "").replace(/https?:\/\//, "");
+		this.style.display='none';
+		this.nextElementSibling.style.display='inline';
+		db.setInstallServer(host, host);
+		var status = $("#status");
+		//status.text("Options Saved.").fadeIn().delay(2000).fadeOut();
+		status.text("Added Server.")
+			.animate({"opacity": 1}, {"duration": "slow", "easing": "linear"})
+			.delay(4000)
+			.animate({"opacity": 0}, {"duration": "slow", "easing": "linear"});
+		$('.prop').remove();
+		init();
+	});
 }
 
+function removeServer() {
+	$('.remove-btn').on('click', function () {
+		var id = $(this).attr('id');
+		var input = $("." + id);
+		db.removeInstallServer(input.val());
+		input.parent().remove();
+		if ($("input.server").length === 0) {
+			setupAddServer();
+		}
+		var status = $("#status");
+		//status.text("Options Saved.").fadeIn().delay(2000).fadeOut();
+		status.text("Removed URL.")
+			.animate({"opacity": 1}, {"duration": "slow", "easing": "linear"})
+			.delay(4000)
+			.animate({"opacity": 0}, {"duration": "slow", "easing": "linear"});
+	});
+}
